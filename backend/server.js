@@ -1,16 +1,14 @@
 const express = require('express')
-const env = require('dotenv')
-env.config()
 const cors = require('cors')
+const connectDB = require('./config/db')
+const authRoutes = require('./Routes/authRoutes');
+connectDB()
 const app = express()
 const PORT = 3000
-const signin = require('./Routes/Signin')
-const login = require('./Routes/Login')
 app.use(cors())
 app.use(express.json())
 
-app.use('/signin',signin)
-app.use('/login',login)
+app.use('/api/auth', authRoutes);
 
 
 app.get('/',(req,res)=>{
