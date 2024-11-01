@@ -19,7 +19,7 @@ const Login = () => {
         localStorage.setItem('token',response.data.token)
         navigate('/dashboard')
       } catch (err) {
-  
+        console.log(err.response.data)
         setError(err.response?.data?.message || 'Login failed');
       }
     }
@@ -31,21 +31,10 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <input
-                  type="text"
-                  name="Username"
-                  placeholder="Username"
-                  value={formData.Username}
-                   onChange={handleChange} 
-                  className="w-full p-2 text-gray-700 border-b border-gray-300 outline-none focus:border-blue-500"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <input
-                  type="text"
-                  name="Email"
+                  type="email"
+                  name="email"
                   placeholder="Email"
-                  value={formData.Email} 
+                  value={formData.email} 
                   onChange={handleChange} 
                   className="w-full p-2 text-gray-700 border-b border-gray-300 outline-none focus:border-blue-500"
                   required
@@ -54,7 +43,7 @@ const Login = () => {
               <div className="mb-4">
                 <input
                   type="password"
-                  name="Password"
+                  name="password"
                   value={formData.password}
                    onChange={handleChange} 
                   placeholder="Password"

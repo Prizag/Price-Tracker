@@ -8,13 +8,14 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
+      console.log(formData)
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/signin', formData);
+            const response = await axios.post('/signup', formData);
             localStorage.setItem('token', response.data.token); 
             navigate('/dashboard'); 
         } catch (err) {
@@ -31,9 +32,9 @@ const Signup = () => {
               <div className="mb-4">
                 <input
                   type="text"
-                  name="Username"
+                  name="username"
                   placeholder="Username"
-                  value={formData.Username}
+                  value={formData.username}
                    onChange={handleChange} 
                   className="w-full p-2 text-gray-700 border-b border-gray-300 outline-none focus:border-blue-500"
                   required
@@ -41,10 +42,10 @@ const Signup = () => {
               </div>
               <div className="mb-4">
                 <input
-                  type="text"
-                  name="Email"
+                  type="email"
+                  name="email"
                   placeholder="Email"
-                  value={formData.Email} 
+                  value={formData.email} 
                   onChange={handleChange} 
                   className="w-full p-2 text-gray-700 border-b border-gray-300 outline-none focus:border-blue-500"
                   required
@@ -53,7 +54,7 @@ const Signup = () => {
               <div className="mb-4">
                 <input
                   type="password"
-                  name="Password"
+                  name="password"
                   value={formData.password}
                    onChange={handleChange} 
                   placeholder="Password"
