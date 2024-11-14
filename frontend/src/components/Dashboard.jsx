@@ -19,19 +19,19 @@ import {
 } from '@/components/ui/sidebar'
 
 export default function Dashboard() {
-  // const navigate = useNavigate()
-  // const Logout = ()=>{
-  //   localStorage.clear('token')
-  //   navigate('/login')
-  // }
-  // React.useEffect(() => {
-  //   const token = localStorage.getItem('token')
-  //   if(!token)
-  //   {
-  //     alert("Login or Signin First")
-  //     navigate('/login')
-  //   }
-  // }, []);
+  const navigate = useNavigate()
+  const Logout = ()=>{
+    localStorage.clear('token')
+    navigate('/login')
+  }
+  React.useEffect(() => {
+    const token = localStorage.getItem('token')
+    if(!token)
+    {
+      alert("Login or Signin First")
+      navigate('/login')
+    }
+  }, []);
   const [trackedItems, setTrackedItems] = React.useState([
     { name: 'Smartphone X', currentPrice: 599, history: [650, 625, 610, 599] },
     { name: 'Laptop Y', currentPrice: 1299, history: [1399, 1350, 1299] },
@@ -69,8 +69,8 @@ export default function Dashboard() {
               <Button variant="ghost" size="icon" className="text-gray-600 hover:text-gray-900">
                 <Bell className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-gray-900 font-bold">
-                Login
+              <Button onClick={Logout} variant="ghost" size="icon" className="text-gray-600 hover:text-gray-900 font-bold">
+                Log out
               </Button>
             </div>
           </header>
