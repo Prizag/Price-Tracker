@@ -6,11 +6,12 @@
 'use client'
 
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { Bell, ChevronDown, LineChart, Menu, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import {
   Sidebar,
   SidebarContent,
@@ -21,13 +22,18 @@ import {
 
 export default function Dashboard() {
 
-
+  //changes made
+  /* ----------------------------------- */
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
 
-  const handleSearch = ()=>{
-    
+  const handleSearch = async ()=>{
+    const response = await axios.get(`http://localhost:3000/search?query=${query}`);
+
+    setResults(response.data)
   }
+
+/* ----------------------------------- */
 
   const navigate = useNavigate()
   const Logout = ()=>{
@@ -95,16 +101,17 @@ export default function Dashboard() {
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Input 
                   type="text" 
+                  onChange ={(e)=>{setQuery(e.target.value)}}
                   placeholder="Enter product URL" 
                   className="w-full sm:w-96 bg-white border-gray-300 text-gray-900 placeholder-gray-400"
                 />
-                <Button  onclick={handleSearch}size="lg" className="bg-gray-900 text-white hover:bg-gray-800">
+                <Button  onClick={handleSearch}size="lg" className="bg-gray-900 text-white hover:bg-gray-800">
                   Start Tracking
                 </Button>
               </div>
             </div>
           </section>
-          <section className="px-4 py-12 bg-white md:px-6 lg:px-8">
+          {/* <section className="px-4 py-12 bg-white md:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">How It Works</h2>
               <div className="grid gap-8 md:grid-cols-3">
@@ -125,15 +132,31 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
           <section className="px-4 py-12 md:px-6 lg:px-8 bg-gray-100">
-            <div className="max-w-3xl mx-auto text-center">
+            {/* <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-4 text-gray-800">Ready to Start Saving?</h2>
               <p className="text-xl text-gray-600 mb-8">
                 Join thousands of smart shoppers who never miss a deal.
               </p>
               <Button size="lg" className="bg-gray-900 text-white hover:bg-gray-800">Sign Up for Free</Button>
-            </div>
+            </div> */}
+
+
+            {/* Changes Made */ }
+            {/* ----------------------------------- */}
+            {results && results.map((item,index)=>(
+              <div key={index}>
+                   <h3>{item.title}</h3>
+                    <img src={item.image} alt={item.title} width="100" />
+                    <p>{item.price}</p>
+              </div>
+
+              
+            ))}
+            {/* ----------------------------------- */ }
+
+
           </section>
         </main>
       </div>

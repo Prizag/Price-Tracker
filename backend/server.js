@@ -2,15 +2,21 @@ const express = require('express')
 const cors = require('cors')
 const connectDB = require('./config/db')
 const authRoutes = require('./Routes/authRoutes');
-const searchRoutes = require('./Routes/searchRoutes')
 connectDB()
 const app = express()
 const PORT = 3000
 app.use(cors())
 app.use(express.json())
 
-app.use('/auth', authRoutes);
+//changes made
+/* ----------------------------------- */
+//Routes/searchRoutes file created
+const searchRoutes = require('./Routes/searchRoutes')
 app.use('/search',searchRoutes)
+
+/* ----------------------------------- */
+app.use('/auth', authRoutes);
+
 
 app.get('/',(req,res)=>{
     res.send('Hello world')
