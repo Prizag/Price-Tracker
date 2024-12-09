@@ -6,6 +6,7 @@
 'use client'
 
 import * as React from 'react'
+import { useEffect } from 'react'
 import { Bell, ChevronDown, LineChart, Menu, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,6 +20,15 @@ import {
 } from '@/components/ui/sidebar'
 
 export default function Dashboard() {
+
+
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleSearch = ()=>{
+    
+  }
+
   const navigate = useNavigate()
   const Logout = ()=>{
     localStorage.clear('token')
@@ -88,7 +98,7 @@ export default function Dashboard() {
                   placeholder="Enter product URL" 
                   className="w-full sm:w-96 bg-white border-gray-300 text-gray-900 placeholder-gray-400"
                 />
-                <Button size="lg" className="bg-gray-900 text-white hover:bg-gray-800">
+                <Button  onclick={handleSearch}size="lg" className="bg-gray-900 text-white hover:bg-gray-800">
                   Start Tracking
                 </Button>
               </div>
