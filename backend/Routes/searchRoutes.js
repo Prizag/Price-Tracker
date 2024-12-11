@@ -21,7 +21,7 @@ router.get('/',async(req,res)=>{
         const productElements = document.querySelectorAll('.s-main-slot .s-result-item');
         const productList = [];
         productElements.forEach((product)=>{
-            const title =  product.querySelector('h2 a span')?.textContent || null;
+            const title =  product.querySelector('h2 span')?.textContent || null;
             const image = product.querySelector('img')?.src || null;
             const price = product.querySelector('.a-price span')?.textContent || null;
 

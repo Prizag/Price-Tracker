@@ -31,6 +31,7 @@ export default function Dashboard() {
     const response = await axios.get(`http://localhost:3000/search?query=${query}`);
 
     setResults(response.data)
+    console.log(response.data);
   }
 
 /* ----------------------------------- */
