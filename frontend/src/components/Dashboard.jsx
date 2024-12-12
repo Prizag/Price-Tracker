@@ -22,17 +22,24 @@ import {
 
 export default function Dashboard() {
 
-  //changes made
-  /* ----------------------------------- */
+
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [store,setStore] = useState([]);
+
+  const addItem = (item)=>{
+    const itemName = item.title
+    setStore(...{itemName})
+  }
 
   const handleSearch = async ()=>{
     const response = await axios.get(`http://localhost:3000/search?query=${query}`);
     setResults(response.data)
   }
 
-/* ----------------------------------- */
+  const saveItems = async() =>{
+    await axios.post(`http://localhost:3000/store`)
+  }
 
   const navigate = useNavigate()
   const Logout = ()=>{
@@ -149,6 +156,7 @@ export default function Dashboard() {
                    <h3>{item.title}</h3>
                     <img src={item.image} alt={item.title} width="100" />
                     <p>{item.price}</p>
+                    <button onClick={addItem(item)}>Save Item</button>
               </div>
 
               
