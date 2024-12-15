@@ -86,14 +86,7 @@ const [savedStates, setSavedStates] = useState(
    
     console.log(trackedItems);
   };
-  const removeItem = async (itemId) => {
-    setTrackedItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    if(token){
-      await axios.post(url+"/item/remove",{itemId});
-    }
-    await fetchItemList();
-    console.log(trackedItems);
-  };
+ 
 
   return (
     <SidebarProvider>

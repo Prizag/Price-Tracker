@@ -18,7 +18,7 @@ app.use('/search',searchRoutes)
 app.use('/auth', authRoutes);
 const itemRoutes=require('./Routes/itemRoutes')
 app.use("/item",itemRoutes);
-
+// app.use("/images",express.static('uploads'));
 app.get('/',(req,res)=>{
     res.send('Hello world')
 })
