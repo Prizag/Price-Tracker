@@ -6,7 +6,7 @@
 'use client'
 
 import * as React from 'react'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { Bell, ChevronDown, LineChart, Menu, Search, BellOff} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -49,11 +49,8 @@ const [savedStates, setSavedStates] = useState(
   
   
   const [trackedItems, setTrackedItems] = React.useState([
-    // { name: 'Smartphone X', currentPrice: 599, history: [650, 625, 610, 599] },
-    // { name: 'Laptop Y', currentPrice: 1299, history: [1399, 1350, 1299] },
-    // { name: 'Headphones Z', currentPrice: 199, history: [249, 229, 209, 199] },
   ])
-  React.useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem('token')
     if(!token)
     {
@@ -63,14 +60,14 @@ const [savedStates, setSavedStates] = useState(
     if(token){
       setToken(localStorage.getItem("token"));
     }
-    
+    fetchItemList();
   }, []);
   const fetchItemList=async()=>{
     const response=await axios.get(url+"/item/list");
+    console.log("fetched Items")
     setTrackedItems(response.data.data);
   };
    // Empty dependency array to ensure it runs once when the component loads
-  
   const toggleSave = async (item,index) => {
     setSavedStates((prevStates) => {
       const newStates = [...prevStates];
@@ -87,10 +84,11 @@ const [savedStates, setSavedStates] = useState(
     console.log(trackedItems);
   };
   const removeItem = async (itemId) => {
-    setTrackedItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    if(token){
-      await axios.post(url+"/item/remove",{itemId});
-    }
+    setTrackedItems((prev) => prev.filter((item) => item.id !== itemId));
+     if(token){
+      console.log("remove Triggred", itemId)
+      await axios.post("http://localhost:3000/item/remove",{id:itemId});
+     }
     await fetchItemList();
     console.log(trackedItems);
   };
@@ -211,17 +209,6 @@ const [savedStates, setSavedStates] = useState(
               </p>
               <Button size="lg" className="bg-gray-900 text-white hover:bg-gray-800">Sign Up for Free</Button>
             </div>
-
-
-            {/* Changes Made */ }
-            {/* ----------------------------------- */}
-            
-
-
-
-              
-          
-            {/* ----------------------------------- */ }
 
 
           </section>
