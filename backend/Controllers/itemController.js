@@ -6,7 +6,7 @@ const addItem=async (req,res)=>{
     const item=new itemModel({
        title:req.body.title,
        price:req.body.price,
-    
+       url:req.body.url
     })
     try{
      await item.save();

@@ -22,13 +22,15 @@ router.get('/',async(req,res)=>{
         const productElements = document.querySelectorAll('.s-main-slot .s-result-item');
         const productList = [];
         productElements.forEach((product)=>{
-            const title =  product.querySelector('h2 span')?.textContent || "text not found";
-            const image = product.querySelector('img')?.src || "image not found";
-            const price = product.querySelector('.a-price span')?.textContent || "price not found";
-            
-            if(title && image && price)
+            const title =  product.querySelector('h2 span')?.textContent || null;
+            const image = product.querySelector('img')?.src || null;
+            const price = product.querySelector('.a-price span')?.textContent || null;
+            const urlLink = product.querySelector('a.a-link-normal')?.getAttribute("href") || null;
+
+            if(title && image && price && urlLink)
             {
-                productList.push({ title, image, price });
+                newUrl = `https://www.amazon.com/${urlLink}`
+                productList.push({ title, image, price,newUrl });
             }
         })
         return productList;
