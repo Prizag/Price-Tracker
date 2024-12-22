@@ -1,6 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-unused-vars */
-
 
 
 'use client'
@@ -34,9 +31,8 @@ export default function Dashboard() {
     console.log(response.data);
   }
 
-/* ----------------------------------- */
 const [savedStates, setSavedStates] = useState(
-  results.map(() => false) // Initialize an array to track each product's saved state
+  results.map(() => false) 
 );
 
 
@@ -66,17 +62,17 @@ const [savedStates, setSavedStates] = useState(
     console.log("fetched Items")
     setTrackedItems(response.data.data);
   };
-   // Empty dependency array to ensure it runs once when the component loads
+   
   const toggleSave = async (item,index) => {
     setSavedStates((prevStates) => {
       const newStates = [...prevStates];
-      newStates[index] = !newStates[index];// Toggle the state for the specific product
+      newStates[index] = !newStates[index];
     
       return newStates;
     });
 
     if(token){
-      await axios.post(url+"/item/store",{title:item.title?.toString() || "Untitled",price: item.price?.toString() || "0",});
+      await axios.post(url+"/item/store",{title:item.title?.toString() || "Untitled",price: item.price?.toString() || "0",url:item.newUrl.toString()});
     }
     await fetchItemList();
    
@@ -103,7 +99,7 @@ const [savedStates, setSavedStates] = useState(
             { trackedItems.map((item, index) => (
               <div key={index} className="p-4 border-b border-gray-200">
                 <h3 className="font-medium text-gray-800">{item.title}</h3>
-                <p className="text-sm text-gray-600">Current: ${item.price}</p>
+                <p className="text-sm text-gray-600">Current: {item.price}</p>
                 <div className="mt-2">
                   <LineChart className="h-16 w-full text-gray-400" />
                 </div>
@@ -163,7 +159,7 @@ const [savedStates, setSavedStates] = useState(
           alt={item.title}
           className="w-full h-36 object-contain rounded-md mb-2"
         />
-        <p className="text-md text-gray-700 mb-4 truncate">{item.price}</p>
+        <a href={item.newUrl}><p className="text-md text-gray-700 mb-4 truncate" >{item.price}</p></a>
        <button
               className={`px-4 py-2 text-sm text-white rounded ${
                 savedStates[index] ? "bg-gray-700 " : "bg-black hover:bg-slate-700"
@@ -178,39 +174,6 @@ const [savedStates, setSavedStates] = useState(
 )}
 
        
-          <section className="px-4 py-12 bg-white md:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">How It Works</h2>
-              <div className="grid gap-8 md:grid-cols-3">
-                <div className="text-center">
-                  <Search className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Find Products</h3>
-                  <p className="text-gray-600">Paste the URL of any product you want to track.</p>
-                </div>
-                <div className="text-center">
-                  <LineChart className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Monitor Prices</h3>
-                  <p className="text-gray-600">We'll keep an eye on price changes for you.</p>
-                </div>
-                <div className="text-center">
-                  <Bell className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">Get Alerts</h3>
-                  <p className="text-gray-600">Receive notifications when prices drop.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="px-4 py-12 md:px-6 lg:px-8 bg-gray-100">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-4 text-gray-800">Ready to Start Saving?</h2>
-              <p className="text-xl text-gray-600 mb-8">
-                Join thousands of smart shoppers who never miss a deal.
-              </p>
-              <Button size="lg" className="bg-gray-900 text-white hover:bg-gray-800">Sign Up for Free</Button>
-            </div>
-
-
-          </section>
         </main>
       </div>
     </SidebarProvider>
