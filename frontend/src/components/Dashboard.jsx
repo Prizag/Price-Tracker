@@ -56,15 +56,6 @@ const [savedStates, setSavedStates] = useState(
     }
     if(token){
       setToken(localStorage.getItem("token"));
-      try {
-        
-        // const decoded = jwtDecode(token);
-        // userId = decoded.userId
-        console.log("decoded userId", userId);
-
-      } catch (error) {
-        console.error("Error decoding token:", err.message);
-      }
     }
     fetchItemList();
   }, []);
