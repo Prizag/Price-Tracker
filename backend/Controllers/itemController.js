@@ -1,16 +1,23 @@
 
 const itemModel=require('../Models/Item')
+const userModel = require('../Models/User')
 const addItem=async (req,res)=>{
-
- 
-    const item=new itemModel({
-       title:req.body.title,
-       price:req.body.price,
-       url:req.body.url
-    })
+    const { title, price, url, userId } = req.body;
     try{
-     await item.save();
-     res.json({success:true,message:"Item Added"})
+    const item=new itemModel({
+        title,
+        price,
+        url
+    })
+    //  await item.save();
+     console.log("user ID:",userId)
+     const user = await userModel.findById(userId);
+     if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    user.items.push(item._id);
+    await user.save();
+    res.json({success:true,message:"Item Added"})
     }catch(error){
       console.log(error);
       res.json({success:false,message:"Error"})
@@ -31,9 +38,15 @@ const listItem=async (req,res)=>{
 
 const removeItem=async(req,res)=>{
     try{
-        const item=await itemModel.findById(req.body.id);
-        await itemModel.findByIdAndDelete(req.body.id);
-        res.json({success:true,message:"Item Removed"});
+        const {itemId,userId} = req.body;
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        user.items = user.items.filter(item => item.toString() !== itemId);
+        await user.save();
+        await itemModel.findByIdAndDelete(itemId);
+        res.json({ success: true, message: 'Item Removed' });
     }catch(error){
        console.log(error);
        res.json({success:false,message:"Error"});

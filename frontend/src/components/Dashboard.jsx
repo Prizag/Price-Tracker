@@ -8,6 +8,8 @@ import { Bell, ChevronDown, LineChart, Menu, Search, BellOff} from 'lucide-react
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useNavigate } from 'react-router-dom'
+import {  jwtDecode } from 'jwt-decode';
+
 import axios from 'axios'
 import {
   Sidebar,
@@ -20,7 +22,7 @@ import {
 
 export default function Dashboard() {
 
-
+  let userId = "";
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const[token,setToken]=useState("");
@@ -54,6 +56,15 @@ const [savedStates, setSavedStates] = useState(
     }
     if(token){
       setToken(localStorage.getItem("token"));
+      try {
+        
+        // const decoded = jwtDecode(token);
+        // userId = decoded.userId
+        console.log("decoded userId", userId);
+
+      } catch (error) {
+        console.error("Error decoding token:", err.message);
+      }
     }
     fetchItemList();
   }, []);
@@ -72,7 +83,19 @@ const [savedStates, setSavedStates] = useState(
     });
 
     if(token){
-      await axios.post(url+"/item/store",{title:item.title?.toString() || "Untitled",price: item.price?.toString() || "0",url:item.newUrl.toString()});
+      const  decoded = jwtDecode(token);
+      const userId = decoded.userId
+      console.log("User Id decoded", userId)
+      if (!userId || userId === "") {
+        console.log("Invalid userId, can't save item");
+        return;
+      }
+
+      await axios.post(url+"/item/store",{
+        title:item.title?.toString() || "Untitled",
+        price: item.price?.toString() || "0",
+        url:item.newUrl.toString(),
+        userId:userId});
     }
     await fetchItemList();
    
@@ -81,8 +104,9 @@ const [savedStates, setSavedStates] = useState(
   const removeItem = async (itemId) => {
     setTrackedItems((prev) => prev.filter((item) => item.id !== itemId));
      if(token){
+      
       console.log("remove Triggred", itemId)
-      await axios.post("http://localhost:3000/item/remove",{id:itemId});
+      await axios.post("http://localhost:3000/item/remove",{itemId:itemId,userId:userId});
      }
     await fetchItemList();
     console.log(trackedItems);
