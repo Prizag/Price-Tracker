@@ -27,6 +27,9 @@ export default function Dashboard() {
   const [results, setResults] = useState([]);
   const[token,setToken]=useState("");
   const url="http://localhost:3000";
+
+
+
   const handleSearch = async ()=>{
     const response = await axios.get(`http://localhost:3000/search?query=${query}`);
     setResults(response.data)
@@ -55,23 +58,40 @@ const [savedStates, setSavedStates] = useState(
       navigate('/login')
     }
     if(token){
-      setToken(localStorage.getItem("token"));
-      try {
-        
-        // const decoded = jwtDecode(token);
-        // userId = decoded.userId
-        console.log("decoded userId", userId);
-
-      } catch (error) {
-        console.error("Error decoding token:", err.message);
-      }
+      setToken(token);
     }
-    fetchItemList();
+    // fetchItemList(token);
   }, []);
+
+  useEffect(() => {
+    if(token)
+    {
+      fetchItemList();
+      console.log("fetch called")
+    }
+  
+  }, [token])
+  
   const fetchItemList=async()=>{
-    const response=await axios.get(url+"/item/list");
-    console.log("fetched Items")
-    setTrackedItems(response.data.data);
+    // console.log("hello ",token)
+    if(token)
+    {
+      const  decoded = jwtDecode(token);
+      const userId = decoded.userId
+      try {
+        console.log("user Id in frontend",userId)
+        const response = await axios.get(url + "/item/list", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: { userId: userId } // Pass the userId as a query parameter or in the body
+        });
+        console.log("Fetched Items:", response.data);
+        setTrackedItems(response.data.data); 
+    } catch (error) {
+        console.error("Error fetching items:", error);
+    }
+    }
   };
    
   const toggleSave = async (item,index) => {
