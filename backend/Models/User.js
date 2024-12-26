@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const Item = require('../Models/Item'); // Import the Item model
-
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -17,7 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     items: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Item' // Reference to the Item model
     }]
 });
