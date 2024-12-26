@@ -67,19 +67,17 @@ const [savedStates, setSavedStates] = useState(
     if(token)
     {
       fetchItemList();
-      console.log("fetch called")
     }
   
   }, [token])
   
   const fetchItemList=async()=>{
-    // console.log("hello ",token)
+
     if(token)
     {
       const  decoded = jwtDecode(token);
       const userId = decoded.userId
       try {
-        console.log("user Id in frontend",userId)
         const response = await axios.get(url + "/item/list", {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -124,9 +122,11 @@ const [savedStates, setSavedStates] = useState(
   const removeItem = async (itemId) => {
     setTrackedItems((prev) => prev.filter((item) => item.id !== itemId));
      if(token){
-      
-      console.log("remove Triggred", itemId)
-      await axios.post("http://localhost:3000/item/remove",{itemId:itemId,userId:userId});
+      const decode = jwtDecode(token);
+      const userId = decode.userId
+      // console.log("userId from RemoveItem :",userId)
+      // console.log("remove Triggred", itemId)
+      await axios.post(url+"/item/remove",{itemId:itemId,userId:userId});
      }
     await fetchItemList();
     console.log(trackedItems);

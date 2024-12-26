@@ -28,14 +28,10 @@ const addItem=async (req,res)=>{
  const listItem = async (req, res) => {
     try {
         const { userId } = req.query;
-        console.log("user Id backend from listItems: ", userId);
-
         const user = await userModel.findById(userId).populate('items');
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
-
-        console.log("Populated Items:", user);
         res.json({ success: true, data: user.items });
     } catch (error) {
         console.log("Error in listItems:", error);
@@ -59,5 +55,5 @@ const removeItem=async(req,res)=>{
        console.log(error);
        res.json({success:false,message:"Error"});
     }
-    }
+}
  module.exports={addItem,listItem,removeItem};
