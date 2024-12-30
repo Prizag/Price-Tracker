@@ -3,6 +3,7 @@ import  { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from '../services/authServices.jsx'
 import { Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 const Login = () => {
     const [formData, setFormData] = useState({email:'',password:''})
     const [error, setError] = useState('')
@@ -23,6 +24,37 @@ const Login = () => {
         setError(err.response?.data?.message || 'Login failed');
       }
     }
+    
+      const handleLoginSuccess = async (credentialResponse) => {
+        const { credential } = credentialResponse;
+
+        try {
+            // Send the Google token to the backend
+            const response = await fetch('http://localhost:3000/api/auth/google/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: credential }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('User Verified and Token Generated:', data);
+                // Example: Save the generated token in localStorage
+                localStorage.setItem('token', data.accessToken);
+                navigate('/dashboard');
+            } else {
+                console.error('Authentication Failed:', data.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    
+  
+
+
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-300">
         <div className="flex w-96 shadow-lg">
@@ -58,6 +90,14 @@ const Login = () => {
               Create One!
             </Link>
           </p>
+          <p className="mt-3 text-center text-sm text-gray-500">OR</p>
+          <p>
+<GoogleLogin
+  onSuccess={handleLoginSuccess}
+  onError={() => {
+    console.log('Login Failed');
+  }}
+/></p>
           </div>
   
           {/* Right side - Submit Button */}

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from '../services/authServices';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+// import { jwtDecode } from 'jwt-decode';
 
 const Signup = () => {
     const [formData, setFormData] = useState({ username: '', email: '', password: '' });
@@ -22,6 +24,47 @@ const Signup = () => {
             setError(err.response?.data?.message || 'Signup failed');
         }
     };
+
+    
+    const handleLoginSuccess = async (credentialResponse) => {
+      const { credential } = credentialResponse;
+
+      try {
+        const username = prompt('Enter your username (Atleast 3 character long):');
+        if (!username || username.length<3) {
+          alert('Username is required!');
+          return; // Exit the function if username is not provided
+      }
+            const password = prompt('Enter your password (Atleast 6 character long):');
+            if (!password || password.length<6) {
+              alert('Password is required!');
+              return; // Exit the function if username is not provided
+          }
+          // Send the Google token to the backend
+          const response = await fetch('http://localhost:3000/api/auth/google', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: credential,
+                username,
+                password
+               }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+              console.log('User Verified and Token Generated:', data);
+              // Example: Save the generated token in localStorage
+              localStorage.setItem('token', data.accessToken);
+              navigate('/dashboard');
+          } else {
+              console.error('Authentication Failed:', data.error);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+      }
+  };
+  
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-300">
@@ -63,7 +106,13 @@ const Signup = () => {
                 />
               </div>
             </form>
-          
+          <p> <GoogleLogin
+  onSuccess={handleLoginSuccess}
+  onError={() => {
+    console.log('Signup Failed');
+  }}
+  useOneTap
+/> </p>
           </div>
   
           {/* Right side - Submit Button */}
