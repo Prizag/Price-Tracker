@@ -124,8 +124,6 @@ const [savedStates, setSavedStates] = useState(
      if(token){
       const decode = jwtDecode(token);
       const userId = decode.userId
-      // console.log("userId from RemoveItem :",userId)
-      // console.log("remove Triggred", itemId)
       await axios.post(url+"/item/remove",{itemId:itemId,userId:userId});
      }
     await fetchItemList();
@@ -145,7 +143,7 @@ const [savedStates, setSavedStates] = useState(
                 <h3 className="font-medium text-gray-800">{item.title}</h3>
                 <p className="text-sm text-gray-600">Current: {item.price}</p>
                 <div className="mt-2">
-                  <LineChart className="h-16 w-full text-gray-400" />
+                  <LineChart className="h-16 w-full text-blue-400" />
                 </div>
                 <button className='px-2 py-2 text-sm text-white rounded bg-black hover:bg-slate-700' onClick={()=>removeItem(item._id)}>Remove Item</button>
               </div>
