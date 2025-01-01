@@ -59,7 +59,7 @@ const Login = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-300">
         <div className="flex w-96 shadow-lg">
           {/* Left side - Form */}
-          <div className="flex flex-col w-2/3 p-8 bg-white">
+          <div className="flex flex-col min-w-2/3 p-8 bg-white">
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <input
@@ -104,7 +104,7 @@ const Login = () => {
           <button
             type="submit"
             onClick={handleSubmit}
-            className="w-1/3 bg-gray-800 text-white flex items-center justify-center hover:bg-gray-900"
+            className="min-w-32	 bg-gray-800 text-white flex items-center justify-center hover:bg-gray-900"
           >
             <span className="text-xl font-semibold tracking-widest">LOGIN</span>
           </button>
