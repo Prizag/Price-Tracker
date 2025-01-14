@@ -39,7 +39,12 @@ const Tracker = () => {
                         params: { userId: userId }
                     }
                 )   
-                console.log("Fetched Items:", response.data);
+                // console.log("Fetched Items:", response.data);
+                const arr = response.data.data
+                for(let i =0;i<arr.length;i++)
+                {
+                  
+                }
                 setItems(response.data.data) 
 
             } catch (error) 
@@ -54,7 +59,7 @@ const Tracker = () => {
   return (
     <div>
       {items.map((item)=>(
-        <div>{item._id} {item.title}</div>
+        <div key={item._id}> {item.title}</div>
       ))}
     </div>
 

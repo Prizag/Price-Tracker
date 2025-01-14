@@ -3,6 +3,7 @@ const cors = require('cors')
 const connectDB = require('./config/db')
 const authRoutes = require('./Routes/authRoutes');
 const googleRoutes=require('./Routes/googleApiRoutes');
+const getImage = require('./Routes/getImageRoute')
 
 connectDB()
 
@@ -25,7 +26,8 @@ app.use('/search',searchRoutes)
 app.use('/auth', authRoutes);
 const itemRoutes=require('./Routes/itemRoutes')
 app.use("/item",itemRoutes);
-// app.use("/images",express.static('uploads'));
+
+app.use('/getImage',getImage);
 app.get('/',(req,res)=>{
     res.send('Hello world')
 })
