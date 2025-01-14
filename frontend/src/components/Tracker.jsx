@@ -40,7 +40,7 @@ const Tracker = () => {
                     }
                 )   
                 console.log("Fetched Items:", response.data);
-                setItems(response.data) 
+                setItems(response.data.data) 
 
             } catch (error) 
             {
@@ -53,10 +53,9 @@ const Tracker = () => {
     
   return (
     <div>
-      
-      <h1>
-        Hello world
-      </h1>
+      {items.map((item)=>(
+        <div>{item._id} {item.title}</div>
+      ))}
     </div>
 
   )
