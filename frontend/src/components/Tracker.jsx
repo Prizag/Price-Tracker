@@ -23,43 +23,53 @@ const Tracker = () => {
     },[token])
 
 
-    async function loadItems()
-    {
-        if(token)
-        {
-            const  decoded = jwtDecode(token);
-                  const userId = decoded.userId
-            try 
-            {
-                const response = await axios.get('http://localhost:3000/item/list',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        },
-                        params: { userId: userId }
-                    }
-                )   
-                // console.log("Fetched Items:", response.data);
-                const arr = response.data.data
-                for(let i =0;i<arr.length;i++)
-                {
-                  
-                }
-                setItems(response.data.data) 
+    async function loadItems() {
+      const tok = localStorage.getItem('token');
+      if (!tok) return;
+  
+      try {
+          const decoded = jwtDecode(tok);
+          const userId = decoded.userId;
+          const response = await axios.get('http://localhost:3000/item/list', {
+              headers: { Authorization: `Bearer ${tok}` },
+              params: { userId },
+          });
+  
+          const arr = response.data.data;
+          const updatedArr = await Promise.all(
+              arr.map(async (item) => {
+                  try {
+                      const imageResponse = await axios.get('http://localhost:3000/getImage', {
+                          headers: { Authorization: `Bearer ${tok}` },
+                          params: { url: item.url },
+                      });
+                      return { ...item, url: imageResponse.data };
+                  } catch (error) {
+                      console.error(`Error fetching image for ${item.title}:`, error);
+                      return item; // Return the item without changes
+                  }
+              })
+          );
+          setItems(updatedArr);
+          console.log("Setted Items")
+      } catch (error) {
+          console.error("Error fetching items:", error);
+      }
+  }
+  
 
-            } catch (error) 
-            {
-                console.error("Error fetching items:", error);
-            }
-        }
-    }
-
-    
+  useEffect(() => {
+    console.log('Updated items:', items);
+}, [items]);
     
   return (
     <div>
       {items.map((item)=>(
-        <div key={item._id}> {item.title}</div>
+        <div key={item._id}> 
+          <h1>{item.title}</h1>
+          <img src={item.url} alt="Image not found" srcSet="" />
+        </div>
+        
       ))}
     </div>
 
