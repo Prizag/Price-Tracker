@@ -64,10 +64,10 @@ const Tracker = () => {
     
   return (
     <div>
-      {items.map((item)=>(
+      {items && items.map((item)=>(
         <div key={item._id}> 
           <h1>{item.title}</h1>
-          <img src={item.url} alt="Image not found" srcSet="" />
+          <img src={item.url.imageUrl} alt="Image not found" srcSet="" />
         </div>
         
       ))}
