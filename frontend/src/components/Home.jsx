@@ -1,5 +1,6 @@
-import * as React from 'react'
-import { Bell, ChevronDown, LineChart, Menu, Search, BellOff} from 'lucide-react'
+/* eslint-disable react/no-unescaped-entities */
+
+import { Bell, LineChart, Search,} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 

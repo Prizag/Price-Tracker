@@ -71,26 +71,44 @@ const [savedStates, setSavedStates] = useState(
   
   }, [token])
   
-  const fetchItemList=async()=>{
-
-    if(token)
-    {
-      const  decoded = jwtDecode(token);
-      const userId = decoded.userId
+  const fetchItemList = async () => {
+    if (token) {
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
       try {
         const response = await axios.get(url + "/item/list", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            params: { userId: userId } // Pass the userId as a query parameter or in the body
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: { userId: userId }, // Pass the userId as a query parameter or in the body
         });
         console.log("Fetched Items:", response.data);
-        setTrackedItems(response.data.data); 
-    } catch (error) {
+        const items = response.data.data;
+  
+        // Fetch images for each item using Puppeteer
+        const updatedItems = await Promise.all(
+          items.map(async (item) => {
+            try {
+              const imageResponse = await axios.get(
+                `${url}/getImage?url=${item.url}`
+              );
+              console.log("Image:",imageResponse);
+              item.image = imageResponse.data.imageUrl || null; // Add image URL to item
+            } catch (error) {
+              console.error(`Error fetching image for ${item.title}:`, error);
+              item.image = null; // Handle missing image
+            }
+            return item;
+          })
+        );
+  
+        setTrackedItems(updatedItems); // Update state with items including images
+      } catch (error) {
         console.error("Error fetching items:", error);
-    }
+      }
     }
   };
+  
    
   const toggleSave = async (item,index) => {
     setSavedStates((prevStates) => {
@@ -102,7 +120,7 @@ const [savedStates, setSavedStates] = useState(
 
     if(token){
       const  decoded = jwtDecode(token);
-      const userId = decoded.userId
+      const userId = decoded.userId;
       console.log("User Id decoded", userId)
       if (!userId || userId === "") {
         console.log("Invalid userId, can't save item");
@@ -120,6 +138,7 @@ const [savedStates, setSavedStates] = useState(
     console.log(trackedItems);
   };
   const removeItem = async (itemId) => {
+
     setTrackedItems((prev) => prev.filter((item) => item.id !== itemId));
      if(token){
       const decode = jwtDecode(token);
@@ -140,12 +159,20 @@ const [savedStates, setSavedStates] = useState(
           <SidebarContent>
             { trackedItems.map((item, index) => (
               <div key={index} className="p-4 border-b border-gray-200">
+                  {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-36 object-contain rounded-md mb-2"
+                  />
+                ) : (
+                  <div className="w-full h-36 bg-gray-200 rounded-md mb-2 flex items-center justify-center">
+                    <span className="text-sm text-gray-500">No Image</span>
+                  </div>
+                )}
                 <h3 className="font-medium text-gray-800">{item.title}</h3>
                 <p className="text-sm text-gray-600">Current: {item.price}</p>
-                <div className="mt-2">
-                  <LineChart className="h-16 w-full text-blue-400" />
-                </div>
-                <button className='px-2 py-2 text-sm text-white rounded bg-black hover:bg-slate-700' onClick={()=>removeItem(item._id)}>Remove Item</button>
+                <button className='px-2 py-2 text-sm text-white rounded bg-black hover:bg-slate-700 mt-3' onClick={()=>removeItem(item._id)}>Remove Item</button>
               </div>
             ))}
           </SidebarContent>
