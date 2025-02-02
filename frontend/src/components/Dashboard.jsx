@@ -36,6 +36,7 @@ export default function Dashboard() {
     console.log(response.data);
   }
 
+
 const [savedStates, setSavedStates] = useState(
   results.map(() => false) 
 );
@@ -221,12 +222,14 @@ const [savedStates, setSavedStates] = useState(
       <div
         key={index}
         className="border border-gray-300 rounded-lg p-3 text-center bg-gray-100 shadow-md h-72"
+       
       >
         <h3 className="text-lg font-semibold mb-2 truncate">{item.title}</h3>
         <img
           src={item.image}
           alt={item.title}
           className="w-full h-36 object-contain rounded-md mb-2"
+          
         />
         <a href={item.newUrl}><p className="text-md text-gray-700 mb-4 truncate" >{item.price}</p></a>
        <button

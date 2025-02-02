@@ -4,6 +4,7 @@ import Login from './components/Login.jsx';
 import Home from './components/Home';
 import Tracker from './components/Tracker';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import Itempage from './components/Itempage';
 function App() {
 
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Home />} />
             <Route path='/tracker' element={<Tracker/>} />
+            <Route path="/item/:id" element={<Itempage/>} />
         </Routes>
     </Router>
   )
