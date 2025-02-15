@@ -4,6 +4,7 @@ const connectDB = require('./config/db')
 const authRoutes = require('./Routes/authRoutes');
 const googleRoutes=require('./Routes/googleApiRoutes');
 const getImage = require('./Routes/getImageRoute')
+const getWebsites = require('./Routes/priceVariations')
 
 connectDB()
 
@@ -28,9 +29,11 @@ const itemRoutes=require('./Routes/itemRoutes')
 app.use("/item",itemRoutes);
 
 app.use('/getImage',getImage);
+app.use('/checkWebsites',getWebsites);
 app.get('/',(req,res)=>{
     res.send('Hello world')
 })
+
 
 app.listen(PORT,(req,res)=>{
     console.log(`The app is running at port ${PORT}`)
