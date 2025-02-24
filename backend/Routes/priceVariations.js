@@ -12,9 +12,15 @@ router.get('/', async (req, res) => {
     const page = await browser.newPage();
 
     try {
-        
-    } catch (error) {
-        
+        priceList = []
+        const flipkartSearch = `https://www.flipkart.com/search?q=${encodeURIComponent(name)}`;
+        const relianceSearch = `https://www.reliancedigital.in/products?q=${encodeURIComponent(name)}`;
+        const chromaSearch = `https://www.croma.com/searchB?q=${encodeURIComponent(name)}`
+
+    
+    } catch (error) 
+    {
+        console.log(error)
     }
 });
 
