@@ -13,11 +13,46 @@ router.get('/', async (req, res) => {
 
     try {
         priceList = []
+        const amazonSearch = `https://www.amazon.com/s?k=${encodeURIComponent(name)}`
         const flipkartSearch = `https://www.flipkart.com/search?q=${encodeURIComponent(name)}`;
         const relianceSearch = `https://www.reliancedigital.in/products?q=${encodeURIComponent(name)}`;
         const chromaSearch = `https://www.croma.com/searchB?q=${encodeURIComponent(name)}`
 
-    
+        const items = []
+        await page.goto(flipkartSearch,{ waitUntil: 'load', timeout: 0 });
+        await page.evaluate(()=>{
+            const link = null;
+            const price = null
+            if(price!= null && link!=null)
+            {
+                items.push({link,price})
+            }
+        })
+
+        await page.goto(relianceSearch,{ waitUntil: 'load', timeout: 0 });
+        await page.evaluate(()=>{
+            const link = null;
+            const price = null
+            if(price!= null && link!=null)
+            {
+                items.push({link,price})
+            }
+        })
+
+        await page.goto(chromaSearch,{ waitUntil: 'load', timeout: 0 });
+        await page.evaluate(()=>{
+            const link = null;
+            const price = null
+            if(price!= null && link!=null)
+            {
+                items.push({link,price})
+            }
+        })
+
+        await browser.close();
+        return items;
+
+
     } catch (error) 
     {
         console.log(error)
