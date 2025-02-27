@@ -13,7 +13,6 @@ router.get('/', async (req, res) => {
 
     try {
         priceList = []
-        const amazonSearch = `https://www.amazon.com/s?k=${encodeURIComponent(name)}`
         const flipkartSearch = `https://www.flipkart.com/search?q=${encodeURIComponent(name)}`;
         const relianceSearch = `https://www.reliancedigital.in/products?q=${encodeURIComponent(name)}`;
         const chromaSearch = `https://www.croma.com/searchB?q=${encodeURIComponent(name)}`
