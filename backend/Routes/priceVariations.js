@@ -22,11 +22,15 @@ router.get('/', async (req, res) => {
         let flipkartItems = await page.evaluate(() => {
             let products = [];
             document.querySelectorAll('._1AtVbE').forEach((product) => {
-                let title = product.querySelector('._4rR01T')?.innerText || product.querySelector('.IRpwTa')?.innerText;
                 let price = product.querySelector('._30jeq3')?.innerText;
                 let linkElement = product.querySelector('a._1fQZEK') || product.querySelector('a._2UzuFa');
                 let link = linkElement ? "https://www.flipkart.com" + linkElement.getAttribute('href') : null;
-                if (title && price && link) products.push({ title, price, link });
+                console.log(price,link);
+                if (  price && link) 
+                {
+                    products.push({  price, link });
+                }
+                    
             });
             return products;
         });
@@ -37,11 +41,15 @@ router.get('/', async (req, res) => {
         let relianceItems = await page.evaluate(() => {
             let products = [];
             document.querySelectorAll('.sp__product').forEach((product) => {
-                let title = product.querySelector('.sp__name')?.innerText;
+
                 let price = product.querySelector('.sp__price')?.innerText;
                 let linkElement = product.querySelector('a.sp__product-link');
                 let link = linkElement ? "https://www.reliancedigital.in" + linkElement.getAttribute('href') : null;
-                if (title && price && link) products.push({ title, price, link });
+                console.log(price,link);
+                if (  price && link) 
+                    {
+                        products.push({  price, link });
+                    }
             });
             return products;
         });
@@ -52,11 +60,15 @@ router.get('/', async (req, res) => {
         let chromaItems = await page.evaluate(() => {
             let products = [];
             document.querySelectorAll('.product-item').forEach((product) => {
-                let title = product.querySelector('.product-title')?.innerText;
+
                 let price = product.querySelector('.amount')?.innerText;
                 let linkElement = product.querySelector('a.product-title');
                 let link = linkElement ? "https://www.croma.com" + linkElement.getAttribute('href') : null;
-                if (title && price && link) products.push({ title, price, link });
+                console.log(price,link);
+                if (  price && link) 
+                    {
+                        products.push({  price, link });
+                    }
             });
             return products;
         });
