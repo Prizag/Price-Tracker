@@ -20,21 +20,17 @@ router.get('/', async (req, res) => {
         // Flipkart Scraper
         await page.goto(flipkartSearch, { waitUntil: 'load', timeout: 0 });
         let flipkartItems = await page.evaluate(() => {
-            let products = [];
-            document.querySelectorAll('._1AtVbE').forEach((product) => {
-                let price = product.querySelector('._30jeq3')?.innerText;
-                let linkElement = product.querySelector('a._1fQZEK') || product.querySelector('a._2UzuFa');
-                let link = linkElement ? "https://www.flipkart.com" + linkElement.getAttribute('href') : null;
-                console.log(price,link);
-                if (  price && link) 
-                {
-                    products.push({  price, link });
-                }
-                    
-            });
-            return products;
+            let product = document.querySelector('.tUxRFH');
+            if (!product) return null;
+            let linkElement = product.querySelector('a.CGtC98');
+            let link = linkElement ? "https://www.flipkart.com" + linkElement.getAttribute('href') : null;
+            let priceElement = product.querySelector('.Nx9bqj ._4b5DiR')
+            let price = priceElement?.innerText || "Price not found";
+
+            return {link, price}
+
         });
-        items.push(...flipkartItems);
+        items.push(flipkartItems);
 
         // Reliance Digital Scraper
         await page.goto(relianceSearch, { waitUntil: 'load', timeout: 0 });
