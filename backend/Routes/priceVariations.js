@@ -35,40 +35,27 @@ router.get('/', async (req, res) => {
         // Reliance Digital Scraper
         await page.goto(relianceSearch, { waitUntil: 'load', timeout: 0 });
         let relianceItems = await page.evaluate(() => {
-            let products = [];
-            document.querySelectorAll('.sp__product').forEach((product) => {
-
-                let price = product.querySelector('.sp__price')?.innerText;
-                let linkElement = product.querySelector('a.sp__product-link');
-                let link = linkElement ? "https://www.reliancedigital.in" + linkElement.getAttribute('href') : null;
-                console.log(price,link);
-                if (  price && link) 
-                    {
-                        products.push({  price, link });
-                    }
-            });
-            return products;
+            let product = document.querySelector('.cp-product .typ-plp .plp-srp-typ');
+            if (!product) return null;
+            let linkElement = product.querySelector('a');
+            let link = linkElement ? "https://www.croma.com/" + linkElement.getAttribute('href') : null;
+            let price = product.querySelector('a')?.innerText || "Price not found";
+            return {link, price}
         });
         items.push(...relianceItems);
 
         // Croma Scraper
         await page.goto(chromaSearch, { waitUntil: 'load', timeout: 0 });
         let chromaItems = await page.evaluate(() => {
-            let products = [];
-            document.querySelectorAll('.product-item').forEach((product) => {
-
-                let price = product.querySelector('.amount')?.innerText;
-                let linkElement = product.querySelector('a.product-title');
-                let link = linkElement ? "https://www.croma.com" + linkElement.getAttribute('href') : null;
-                console.log(price,link);
-                if (  price && link) 
-                    {
-                        products.push({  price, link });
-                    }
-            });
-            return products;
+                let product = document.querySelector('.cp-product .typ-plp .plp-srp-typ');
+                if (!product) return null;
+                let linkElement = product.querySelector('a');
+                let link = linkElement ? "https://www.croma.com" + linkElement.getAttribute('href').replace(/^\/+/, "") : null;
+                let priceElement = product.querySelector('span.amount span.plp-srp-new-amount');
+                let price = priceElement?.innerText || "Price not found";
+                return {link, price}
         });
-        items.push(...chromaItems);
+        items.push(chromaItems);
 
         await browser.close();
         res.json({ products: items });
