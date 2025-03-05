@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const puppeteer = require('puppeteer');
 
-puppeteer.use(StealthPlugin());
 
 router.get('/', async (req, res) => {
     const { name } = req.query;
@@ -11,56 +9,38 @@ router.get('/', async (req, res) => {
         return res.status(400).json({ error: 'Query is required' });
     }
 
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-
-    // ✅ Set custom user-agent and headers to avoid detection
-    await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
-    );
-    await page.setExtraHTTPHeaders({
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Referer': 'https://www.google.com',
-    });
-
     let items = [];
+
+    
 
     try {
         const flipkartSearch = `https://www.flipkart.com/search?q=${encodeURIComponent(name)}`;
         const relianceSearch = `https://www.reliancedigital.in/search?q=${encodeURIComponent(name)}`;
         const chromaSearch = `https://www.croma.com/searchB?q=${encodeURIComponent(name)}`;
 
-        // 🔹 Flipkart Scraper
-        await page.goto(flipkartSearch, { waitUntil: 'networkidle2', timeout: 0 });
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        await page.evaluate(() => window.scrollBy(0, window.innerHeight)); // Scroll down
-
+        // Flipkart Scraper
+        await page.goto(flipkartSearch, { waitUntil: 'load', timeout: 0 });
         let flipkartItem = await page.evaluate(() => {
             let product = document.querySelector('.tUxRFH');
-            if (!product) return { link: "Not found", price: "Price not found" };
+            if (!product) return null;
 
             let linkElement = product.querySelector('a.CGtC98');
-            let link = linkElement ? "https://www.flipkart.com" + linkElement.getAttribute('href') : "Not found";
-
-            let priceElement = product.querySelector('._30jeq3');
+            let link = linkElement ? "https://www.flipkart.com" + linkElement.getAttribute('href') : null;
+            
+            let priceElement = product.querySelector('._30jeq3'); // Updated price selector
             let price = priceElement?.innerText || "Price not found";
 
             return { link, price };
         });
-        items.push(flipkartItem);
+        if (flipkartItem) items.push(flipkartItem); // Prevent pushing null
 
-        // 🔹 Reliance Digital Scraper
-        await page.goto(relianceSearch, { waitUntil: 'networkidle2', timeout: 0 });
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        await page.evaluate(() => window.scrollBy(0, window.innerHeight));
-
+        // Reliance Digital Scraper
+        await page.goto(relianceSearch, { waitUntil: 'load', timeout: 0 });
         let relianceItem = await page.evaluate(() => {
             let product = document.querySelector('.product-card');
-            if (!product) return { link: "Not found", price: "Price not found" };
+            if (!product) return { link: "Not founder", price: "Price not founder" }; // Ensures it returns something
 
             let linkElement = product.querySelector('.card-info-container a');
             let link = linkElement ? "https://www.reliancedigital.in" + linkElement.getAttribute('href') : "Not found";
@@ -70,16 +50,12 @@ router.get('/', async (req, res) => {
 
             return { link, price };
         });
-        items.push(relianceItem);
+        items.push(relianceItem); // Always push, even if "Not found"
 
-        // 🔹 Croma Scraper
-        await page.goto(chromaSearch, { waitUntil: 'networkidle2', timeout: 0 });
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        await page.evaluate(() => window.scrollBy(0, window.innerHeight));
-
+        await page.goto(chromaSearch, { waitUntil: 'load', timeout: 0 });
         let chromaItem = await page.evaluate(() => {
             let product = document.querySelector('.cp-product .typ-plp .plp-srp-typ');
-            if (!product) return { link: "Not found", price: "Price not found" };
+            if (!product) return { link: "Not founder", price: "Price not founder" }; // Ensures it returns something
 
             let linkElement = product.querySelector('a');
             let link = linkElement ? "https://www.croma.com" + linkElement.getAttribute('href').replace(/^\/+/, "") : "Not found";
@@ -89,7 +65,8 @@ router.get('/', async (req, res) => {
 
             return { link, price };
         });
-        items.push(chromaItem);
+        items.push(chromaItem); // Always push, even if "Not found"
+
 
         await browser.close();
         res.json({ products: items });
