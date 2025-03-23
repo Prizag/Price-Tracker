@@ -17,19 +17,19 @@ router.get('/', async (req, res) => {
 
     try {
         const flipkartSearch = `https://www.flipkart.com/search?q=${encodeURIComponent(name)}`;
-        const relianceSearch = `https://www.reliancedigital.in/search?q=${encodeURIComponent(name)}`;
+        const relianceSearch = `https://www.reliancedigital.in/products?q=${encodeURIComponent(name)}`;
         const chromaSearch = `https://www.croma.com/searchB?q=${encodeURIComponent(name)}`;
 
         // Flipkart Scraper
         await page.goto(flipkartSearch, { waitUntil: 'load', timeout: 0 });
         let flipkartItem = await page.evaluate(() => {
-            let product = document.querySelector('.tUxRFH');
+            let product = document.querySelector('.slAVV4 , .tUxRFH');
             if (!product) return null;
 
-            let linkElement = product.querySelector('a.CGtC98');
+            let linkElement = product.querySelector('a.VJA3rP , a.CGtC98');
             let link = linkElement ? "https://www.flipkart.com" + linkElement.getAttribute('href') : null;
             
-            let priceElement = product.querySelector('._30jeq3'); // Updated price selector
+            let priceElement = product.querySelector('.Nx9bqj , ._30jeq3'); // Updated price selector
             let price = priceElement?.innerText || "Price not found";
 
             return { link, price };
@@ -39,13 +39,13 @@ router.get('/', async (req, res) => {
         // Reliance Digital Scraper
         await page.goto(relianceSearch, { waitUntil: 'load', timeout: 0 });
         let relianceItem = await page.evaluate(() => {
-            let product = document.querySelector('.product-card');
+            let product = document.querySelector('.card-info-container');
             if (!product) return { link: "Not founder", price: "Price not founder" }; // Ensures it returns something
 
-            let linkElement = product.querySelector('.card-info-container a');
+            let linkElement = product.querySelector('a.product-card-image');
             let link = linkElement ? "https://www.reliancedigital.in" + linkElement.getAttribute('href') : "Not found";
 
-            let priceElement = product.querySelector('.price-container');
+            let priceElement = product.querySelector('.price');
             let price = priceElement?.innerText.trim() || "Price not found";
 
             return { link, price };
@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
 
         await page.goto(chromaSearch, { waitUntil: 'load', timeout: 0 });
         let chromaItem = await page.evaluate(() => {
-            let product = document.querySelector('.cp-product .typ-plp .plp-srp-typ');
+            let product = document.querySelector('product-item');
             if (!product) return { link: "Not founder", price: "Price not founder" }; // Ensures it returns something
 
             let linkElement = product.querySelector('a');
